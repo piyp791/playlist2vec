@@ -1,0 +1,29 @@
+version: '3'
+services:
+  autocomplete-service:
+    build: ./autocomplete-service
+    image: autocomplete-image:latest
+    ports:
+      - "3002:3002"
+    networks:
+      - p2v-network
+
+  search-service:
+    build: ./search-service
+    image: search-image:latest
+    ports:
+      - "3001:3001"
+    networks:
+      - p2v-network
+
+  web-server:
+    build: ./web-server
+    image: web-server-image:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - p2v-network
+
+networks:
+  p2v-network:
+    driver: bridge

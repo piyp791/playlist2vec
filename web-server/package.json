@@ -1,0 +1,36 @@
+{
+  "scripts": {
+    "test": "export NODE_ENV=production && export PORT=3000 && mocha 'src/test/**/*.js' --exit",
+    "test-dev": "export NODE_ENV=development && export PORT=3000 && mocha 'src/test/**/*.js' --exit",
+    "test-with-coverage": "nyc --reporter=text mocha 'src/test/**/*.js' --exit",
+    "start": "node src/index.js",
+    "start-live-mode": "export NODE_ENV=production && export PORT=3000 && node src/index.js",
+    "start-dev-mode": "export NODE_ENV=development && export PORT=3000 && node src/index.js"
+  },
+  "dependencies": {
+    "@elastic/ecs-winston-format": "^1.5.3",
+    "axios": "^1.7.7",
+    "compression": "^1.7.5",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-validator": "^7.2.0",
+    "uuid": "^11.0.3",
+    "winston": "^3.16.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-uglify": "^3.0.2",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "supertest": "^6.3.3"
+  }
+}

@@ -1,0 +1,8 @@
+{
+    "default_port": 3000,
+    "search_engine_host": "http://search-service",
+    "search_engine_port": 3001,
+    "autocomplete_engine_host": "http://autocomplete-service",
+    "autocomplete_engine_port": 3002,
+    "static_resource_cache_time": 2592000000
+}

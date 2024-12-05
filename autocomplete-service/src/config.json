@@ -1,0 +1,13 @@
+{
+    "db_path": "playlist2vec.db",
+    "autocomplete": {
+        "suggestions_count": 15,
+        "max_fuzzy_dist": 0
+    },
+    "logs": {
+        "filename": "playlist2vec_autocomplete_logs.log",
+        "max_bytes": 5000000,
+        "backup_count": 5
+    },
+    "source_application": "autocomplete-service"
+}

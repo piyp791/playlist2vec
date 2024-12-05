@@ -1,0 +1,115 @@
+
+server {
+    listen 80;
+    server_name localhost:3000;
+
+    # Serve static files
+    location ~* \.(png|jpg|jpeg|gif|svg|ico|css|js|woff|woff2|ttf|otf|eot|ttf|json)$ {
+        root /usr/share/nginx/html;
+        expires max;
+        access_log off;
+        try_files $uri =404;
+
+        limit_req zone=static_limit_per_ip burst=40 nodelay;
+        limit_req zone=static_limit_global burst=200 nodelay;
+
+        limit_conn_log_level error;
+        limit_conn_status 429;
+    }
+
+    location /populate {
+        limit_req zone=autocomplete_limit_per_ip burst=10 nodelay;
+        limit_req zone=autocomplete_limit_global burst=30 nodelay;
+
+        limit_conn conn_zone_per_ip 2;
+        limit_conn_log_level error;
+        limit_conn_status 429;
+
+        proxy_pass http://webserver/populate;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_cache cache_zone;
+        proxy_cache_valid 200 365d;
+        proxy_cache_valid 404 1m;
+
+        add_header Cache-Control "public, max-age=31536000, s-maxage=31536000" always;
+        add_header X-Cache-Status $upstream_cache_status;
+
+        proxy_cache_key "$scheme$request_method$request_uri";
+    }
+
+    location /search-random {
+        # limit_req_dry_run on;
+        limit_req zone=search_limit_per_ip burst=5 nodelay;
+        limit_req zone=search_limit_global burst=20 nodelay;
+
+        limit_conn conn_zone_per_ip 1;
+        limit_conn_log_level error;
+        limit_conn_status 429;
+
+        proxy_pass http://webserver/search-random;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_cache cache_zone;
+        proxy_cache_valid 200 365d;
+        proxy_cache_valid 404 1m;
+
+        add_header Cache-Control "public, max-age=31536000, s-maxage=31536000" always;
+        add_header X-Cache-Status $upstream_cache_status;
+
+        proxy_cache_key "$scheme$request_method$request_uri";
+    }
+
+    location /search {
+        limit_req zone=search_limit_per_ip burst=5 nodelay;
+        limit_req zone=search_limit_global burst=20 nodelay;
+
+        limit_conn conn_zone_per_ip 1;
+        limit_conn_log_level error;
+        limit_conn_status 429;
+
+        proxy_pass http://webserver/search;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_cache cache_zone;
+        proxy_cache_valid 200 365d;
+        proxy_cache_valid 404 1m;
+
+        add_header Cache-Control "public, max-age=31536000, s-maxage=31536000" always;
+        add_header X-Cache-Status $upstream_cache_status;
+
+        proxy_cache_key "$scheme$request_method$request_uri";
+    }
+
+    location / {
+        limit_req zone=static_limit_per_ip burst=40 nodelay;
+        limit_req zone=static_limit_global burst=200 nodelay;
+
+        limit_conn_log_level error;
+        limit_conn_status 429;
+
+        proxy_pass http://webserver;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_cache cache_zone;
+        proxy_cache_valid 200 365d;
+        proxy_cache_valid 404 1m;
+
+        add_header Cache-Control "public, max-age=31536000, s-maxage=31536000" always;
+        add_header X-Cache-Status $upstream_cache_status;
+
+        proxy_cache_key "$scheme$request_method$request_uri";
+    }
+}

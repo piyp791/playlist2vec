@@ -1,0 +1,10 @@
+*.ann
+*.usearch
+*.pyc
+.venv/
+misc_code/*
+node_modules/
+web-server/dist/*
+__pycache__
+*.db
+*.log

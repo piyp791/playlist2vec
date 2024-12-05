@@ -1,0 +1,19 @@
+{
+    "db_path": "playlist2vec.db",
+    "search": {
+        "index": {
+            "emb_size": 750,
+            "metric": "cos",
+            "connectivity": 64,
+            "expansion_add": 256,
+            "expansion_search": 128
+        },
+        "num_results": 9
+    },
+    "logs": {
+        "filename": "playlist2vec_search_logs.log",
+        "max_bytes": 5000000,
+        "backup_count": 5
+    },
+    "source_application": "search-service"
+}

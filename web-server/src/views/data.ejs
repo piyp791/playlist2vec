@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Playlist2vec - Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Data page of the demo web site for the paper 'Representation, Exploration and Recommendation Of Playlists'" />
+  <meta name="author" content="" />
+
+  <!-- css -->
+  <link href="/css/bootstrap.css" rel="stylesheet" />
+  <link href="/css/bootstrap-responsive.css" rel="stylesheet" />
+  <link href="/css/prettyPhoto.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+
+  <!-- Theme skin -->
+  <link id="t-colors" href="color/default.css" rel="stylesheet" />
+
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/ico/apple-touch-icon-144-precomposed.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/ico/apple-touch-icon-114-precomposed.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/ico/apple-touch-icon-72-precomposed.png" />
+  <link rel="apple-touch-icon-precomposed" href="/ico/apple-touch-icon-57-precomposed.png" />
+  <link rel="shortcut icon" href="/ico/favicon.png" />
+
+  <!-- =======================================================
+    Theme Name: Remember
+    Theme URL: https://bootstrapmade.com/remember-free-multipurpose-bootstrap-template/
+    Author: BootstrapMade.com
+    Author URL: https://bootstrapmade.com
+  ======================================================= -->
+</head>
+
+<body>
+
+  <div id="wrapper">
+    <!-- start header -->
+    <header>
+      <div class="top">
+        <div class="container">
+          <div class="row">
+          </div>
+        </div>
+      </div>
+      <div class="container">
+
+
+        <div class="row nomargin">
+          <div class="span8">
+            <div class="logo">
+              <h1><a href="/">Playlist2vec</a></h1>
+            </div>
+          </div>
+          <div class="span4">
+            <div class="navbar navbar-static-top">
+              <div class="navigation">
+                <nav>
+                  <ul class="nav topnav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/demo">Demo</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <!-- end navigation -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- end header -->
+
+    <section id="inner-headline">
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+            <div class="inner-heading">
+              <h2>Representation, Exploration, and Recommendation of Playlists: Dataset</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="content">
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+            <div id="content-div">
+              <p style="text-align:justify">This dataset was created using Spotify developer API. It consists of
+                user-created
+                as well as Spotify-curated playlists.<br>
+                The dataset consists of 1 million playlists, 3 million unique tracks, 3 million unique albums, and 1.3
+                million
+                artists.<br>
+                The data is stored in a SQL database, with the primary entities being songs, albums, artists, and
+                playlists.<br>
+                Each of the aforementioned entities are represented by unique IDs (Spotify URI). <br>
+                Data is stored into following tables:<br>
+              <ol>
+                <li>Album</li>
+                <li>Artist</li>
+                <li>Track</li>
+                <li>Playlist</li>
+              </ol>
+
+              <b>Album</b><br><br>
+              <span class="table-columns">| Id | Name | Uri |</span><br><br>
+
+              <a href="https://developer.spotify.com/console/get-album/" target="_blank">Spotify Album
+                Documentation</a><br><br>
+
+              <b>Id:</b> Album ID as provided by Spotify<br>
+              <b>Name:</b> Album Name as provided by Spotify<br>
+              <b>URI:</b> Album URI as provided by Spotify<br><br><br>
+
+              <b>Artist</b><br><br>
+              <span class="table-columns">| Id | Name | Uri |</span><br><br><br>
+
+              <a href="https://developer.spotify.com/documentation/web-api/reference/artists/get-artist/"
+                target="_blank">Spotify
+                Artist Documentation</a><br><br>
+
+
+              <b>Id:</b> Artist ID as provided by Spotify<br>
+              <b>Name:</b> Artist Name as provided by Spotify<br>
+              <b>URI:</b> Artist URI as provided by Spotify<br><br><br>
+
+              <b>Track</b><br><br>
+              <span class="table-columns">| Id | Name | Duration | Popularity |
+                Explicit | Preview_Url | Uri | Album_id |</span><br><br><br>
+
+              <a href="https://developer.spotify.com/documentation/web-api/reference/tracks/get-track/"
+                target="_blank">Spotify
+                Track Documentation</a><br><br>
+              <b>Id:</b> Track ID as provided by Spotify<br>
+              <b>Name:</b> Track Name as provided by Spotify<br>
+              <b>Duration:</b> Track Duration (in milliseconds) as provided by Spotify<br>
+              <b>Popularity:</b> Track Popularity as provided by Spotify<br>
+              <b>Explicit:</b> Whether the track has explicit lyrics or not. (true or false) <br>
+              <b>Preview_Url:</b> A link to a 30 second preview (MP3 format) of the track. Can be null<br>
+              <b>Uri:</b> Track Uri as provided by Spotify<br>
+              <b>Album_id:</b> Album Id to which the track belongs<br>
+              <br><br>
+
+              <b>Playlist</b><br><br>
+              <span class="table-columns">| Id | Name | Followers | Uri | Total_tracks
+                |</span><br><br><br>
+
+              <a href="https://developer.spotify.com/documentation/web-api/reference/playlists/get-playlist/"
+                target="_blank">Spotify
+                Playlist Documentation</a><br><br>
+
+              <b>Id:</b> Playlist ID as provided by Spotify<br>
+              <b>Name:</b> Playlist Name as provided by Spotify<br>
+              <b>Followers:</b> Playlist Followers as provided by Spotify<br>
+              <b>Uri:</b> Playlist Uri as provided by Spotify<br>
+              <b>Total_tracks:</b> Total number of tracks in the playlist.<br>
+              <br><br>
+              </p>
+
+              <p><b>You can access the dataset at <a id=access-link target="_blank"
+                    href="https://zenodo.org/record/5002584">https://zenodo.org/record/5002584</a></b><br><br>
+              <p style="font-size:large"><b>If you use this dataset, please cite:</b></p><br>
+              <section id="cite-text">Papreja P., Venkateswara H.,
+                Panchanathan S. (2020) Representation, Exploration and Recommendation of Playlists. In: Cellier P.,
+                Driessens K. (eds) Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2019. Communications
+                in Computer and Information Science, vol 1168. Springer, Cham</section>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div id="sub-footer">
+        <div class="container">
+          <div class="row">
+            <div class="span4">
+              <div class="copyright">
+                <p><span>Piyush Papreja @2019</span></p>
+              </div>
+            </div>
+
+            <div class="span4">
+              <div class="copyright">
+                <p style="text-align: center;"><span><a target="_blank" href="https://bitsandmusic.com/">Get In
+                      Touch</a></span></p>
+              </div>
+            </div>
+
+            <div class="span4">
+              <div class="credits">
+                Created by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <a href="#" class="scrollup"><i class="icon-angle-up icon-rounded icon-bglight icon-2x"></i></a>
+
+  <!-- javascript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+  <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  <script src="/js/modernizr.custom.js"></script>
+  <script src="/js/toucheffects.js"></script>
+  <script src="/js/google-code-prettify/prettify.js"></script>
+  <script src="/js/jquery.prettyPhoto.js"></script>
+  <script src="/js/animate.js"></script>
+
+  <!-- Template Custom JavaScript File -->
+  <script src="/js/custom.js"></script>
+
+</body>
+
+</html>
