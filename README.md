@@ -58,7 +58,7 @@ Run the following command to clone the repository:
 4. Remove the default configuration file by executing: 
 
     ```
-    /etc/nginx/sites-enabled/default
+    sudo rm /etc/nginx/sites-enabled/default
     ```
 5. Create a cache directory for NGINX:
 
