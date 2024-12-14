@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+docker compose down --volumes
+
 cd web-server
 echo "Step 1: Installing dependencies and running Gulp..."
 ./build-static.sh
