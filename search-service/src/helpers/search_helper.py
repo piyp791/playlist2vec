@@ -9,7 +9,8 @@ from usearch.index import Index
 logger = None
 
 class SearchHelper:
-    def __init__(self, config, db_client: DBHelper, logFactory: LogFactory):
+    def __init__(self, config, db_client: DBHelper, logFactory: LogFactory, is_mini: bool = False):
+        self.is_mini = is_mini
         self.config = config
         self.db_client = db_client
         self.search_tree = None
@@ -29,8 +30,10 @@ class SearchHelper:
             expansion_search=self.config['search']['index']['expansion_search']
         )
 
-        self.search_tree.view('src' + os.sep + 'playlist_tree.usearch') # View from disk without loading in memory
-        logger.info("playlist tree loaded in memory")
+        search_tree_path = self.config['search_index_path'] if is_mini == False else self.config['search_index_path_mini']
+        if is_mini: self.search_tree.load('src' + os.sep + search_tree_path)
+        else: self.search_tree.view('src' + os.sep + search_tree_path) # View from disk without loading in memory
+        logger.info("search index loaded")
 
         self.TOTAL_KEYS = len(self.search_tree)
         logger.info(f"total_keys::{self.TOTAL_KEYS}")

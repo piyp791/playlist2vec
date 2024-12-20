@@ -9,18 +9,20 @@ from src.logfactory import LogFactory
 logger = None
 
 class DBHelper:
-    def __init__(self, config: dict, logFactory: LogFactory):
+    def __init__(self, config: dict, logFactory: LogFactory, is_mini: bool = False):
+        self.is_mini = is_mini
         self.config = config
-        self.connection = self.__init_connection()
+        self.connection = self.__init_connection(is_mini)
 
         global logger
         self.logfactory = logFactory
         logger = self.logfactory.get_logger(__name__)
         logger.info(f"DBHelper class initialized")
 
-    def __init_connection(self):
+    def __init_connection(self, is_mini: bool = False):
         try:
-            conn = sqlite3.connect('src' + os.sep + self.config['db_path'], check_same_thread=False)
+            db_path = self.config['db_path'] if is_mini == False else self.config['db_path_mini']
+            conn = sqlite3.connect('src' + os.sep + db_path, check_same_thread=False)
             conn.row_factory = Row 
             return conn
         except Error as ex:
@@ -29,7 +31,7 @@ class DBHelper:
 
     def __get_connection(self):
         if self.connection is not None: return self.connection
-        return self.__init_connection()
+        return self.__init_connection(self.is_mini)
 
     def get_item_details(self, idxs: List[int] = ()) -> Dict[int, ItemInfo]:
         conn = self.__get_connection()

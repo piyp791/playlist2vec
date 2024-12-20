@@ -4,12 +4,16 @@ services:
     image: autocomplete-image:latest
     networks:
       - p2v-network
+    environment:
+      - IS_MINI
 
   search-service:
     build: ./search-service
     image: search-image:latest
     networks:
       - p2v-network
+    environment:
+      - IS_MINI
 
   web-server:
     build: ./web-server

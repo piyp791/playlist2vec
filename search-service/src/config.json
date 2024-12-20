@@ -1,5 +1,8 @@
 {
     "db_path": "playlist2vec.db",
+    "db_path_mini": "playlist2vec_mini.db",
+    "search_index_path": "playlist_tree.usearch",
+    "search_index_path_mini": "playlist_tree_mini.usearch",
     "search": {
         "index": {
             "emb_size": 750,

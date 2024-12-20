@@ -1,4 +1,5 @@
 import json
+import os
 
 from fastapi.exceptions import RequestValidationError
 
@@ -19,7 +20,10 @@ logFactory = LogFactory(config)
 logger = logFactory.get_logger(__name__)
 # end of logging related initializations
 
-db_client = DBHelper(config, logFactory)
+is_mini = os.getenv("IS_MINI", "false").lower() == "true"
+logger.info(f"Is mini environment variable:: {str(is_mini)}")
+
+db_client = DBHelper(config, logFactory, is_mini)
 search_helper = AutocompleteHelper(config, db_client, logFactory)
 
 app = FastAPI()
