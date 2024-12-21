@@ -1,28 +1,34 @@
 services:
   autocomplete-service:
     build: ./autocomplete-service
-    image: autocomplete-image:latest
+    image: piyp791/autocomplete-image:latest
     networks:
       - p2v-network
-    environment:
-      - IS_MINI
+    env_file:
+      - .env
+    deploy:
+      replicas: 1
 
   search-service:
     build: ./search-service
-    image: search-image:latest
+    image: piyp791/search-image:latest
     networks:
       - p2v-network
-    environment:
-      - IS_MINI
+    env_file:
+      - .env
+    deploy:
+      replicas: 1
 
   web-server:
     build: ./web-server
-    image: web-server-image:latest
+    image: piyp791/web-server-image:latest
     ports:
       - "3000:3000"
     networks:
       - p2v-network
+    deploy:
+      replicas: 1
 
 networks:
   p2v-network:
-    driver: bridge
+    driver: overlay

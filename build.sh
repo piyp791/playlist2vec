@@ -1,6 +1,22 @@
 #!/bin/bash
 set -e
 
+# check if dockerhub username is set as envionment variable
+if [ -z "$DOCKER_USERNAME" ]; then
+    echo "Please set the DOCKER_USERNAME environment variable."
+    exit 1
+fi
+
+# Log in to Docker Hub
+echo "Logging in to Docker Hub..."
+docker login -u "$DOCKER_USERNAME"
+
+# Check if login was successful
+if [ $? -ne 0 ]; then
+    echo "Docker Hub login failed!"
+    exit 1
+fi
+
 # Function to download and copy static resources
 download_resources() {
     local resource_type=$1
@@ -29,20 +45,6 @@ download_resources() {
 # Clean up previous Docker volumes
 docker compose down --volumes
 
-# Build static files
-cd web-server
-echo "Step 1: Installing dependencies and running Gulp..."
-./build-static.sh
-
-# Clear previous static files
-sudo rm -rf /usr/share/nginx/html/*
-
-# Copy new static files
-echo "Copying static files..."
-sudo cp -r dist/* /usr/share/nginx/html/
-
-cd ../
-
 # Read the value of IS_MINI from the .env file
 IS_MINI=$(grep -E '^IS_MINI=' .env | cut -d '=' -f2)
 
@@ -65,5 +67,7 @@ fi
 echo "Step 2: Building Docker image..."
 docker compose build --no-cache
 
-echo "Step 3: Deploying docker stack..."
-docker compose up -d
+docker image push "$DOCKER_USERNAME"/autocomplete-image:latest
+docker image push "$DOCKER_USERNAME"/search-image:latest
+docker image push "$DOCKER_USERNAME"/web-server-image:latest
+
