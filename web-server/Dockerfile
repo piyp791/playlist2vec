@@ -3,6 +3,8 @@ ARG NODE_VERSION=20.18.0
 
 FROM node:${NODE_VERSION}-alpine
 
+RUN apk add --no-cache curl
+
 # Use production node environment by default.
 ENV NODE_ENV production
 WORKDIR /usr/src/app

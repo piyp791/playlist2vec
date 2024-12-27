@@ -15,6 +15,12 @@ services:
         reservations:
           cpus: '0.75'
           memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "requestid:healthcheckrequest", "-H", "endpoint:health", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
 
   search-service:
     build: ./search-service
@@ -32,6 +38,12 @@ services:
         reservations:
           cpus: '0.75'
           memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "requestid:healthcheckrequest", "-H", "endpoint:health", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
 
   web-server:
     build: ./web-server
@@ -42,6 +54,12 @@ services:
       - p2v-network
     deploy:
       replicas: 1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
 
 networks:
   p2v-network:
