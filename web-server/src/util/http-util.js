@@ -30,7 +30,8 @@ module.exports = {
         throw new APIError(`API call failed with error code: ${err.response.code} :: ${JSON.stringify(err.response.data)}`);
       }
       else {
-        throw new ConnectionError(`Error in sending request to URL : ${resourceLocator} :: Error code: ${err.response.status} :: Payload ${JSON.stringify(recEnginePayload)}`);
+        const statusCode = err?.response?.status ?? 0;
+        throw new ConnectionError(`Error in sending request to URL : ${resourceLocator} :: Error code: ${statusCode} :: Payload ${JSON.stringify(recEnginePayload)}`);
       }
     });
   },
