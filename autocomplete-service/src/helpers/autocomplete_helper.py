@@ -24,3 +24,9 @@ class AutocompleteHelper:
     def auto_complete(self, prefix: str, count: int = None) -> List[dict]:
         count = count if count is not None else self.config['autocomplete']['suggestions_count']
         return self.autocomplete_tree.autocomplete(prefix,  count)
+    
+    def check_health(self):
+        result = self.autocomplete_tree.autocomplete('a',  1)
+        if result is None or len(result) == 0:
+            raise Exception("Autocomplete health check failed")
+        return True

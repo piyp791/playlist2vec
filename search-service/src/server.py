@@ -46,6 +46,29 @@ async def validation_exception_handler(request, exc):
 		"status": "FAILURE",
 	}, status_code=422)
 
+@app.get("/health")
+def health_check():
+    """
+    Checks the health of the service.
+    
+    Returns:
+    	JSONResponse: A JSON object containing the status of the service.
+    """
+    try:
+        db_status = db_client.check_health()
+        search_status = search_helper.check_health()
+        if db_status == True and search_status == True:
+            return JSONResponse({
+			"status": "healthy",
+			})
+        else:
+            raise Exception("Health check failed. Database status: {db_status}, Search status: {autocomplete_status}")
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return JSONResponse({
+			"status": "unhealthy",
+		}, status_code=503)
+
 @app.get('/search')
 def do_search(request: Request, id: int | None = None, 
               is_random: bool = True):

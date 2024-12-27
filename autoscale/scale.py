@@ -57,7 +57,7 @@ def get_scale(request_counts):
     return required_service_replicas
 
 def main():
-    print(f"Reading request counts from the Bash script at time: {datetime.now()}")
+    print(f"Reading request counts from the Bash script at: {datetime.now()}")
     # Call the Bash function and capture its output
     result = subprocess.run(['bash', LOG_FILE_PARSER], capture_output=True, text=True)
     print("Done...")
