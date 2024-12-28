@@ -1,22 +1,6 @@
 #!/bin/bash
 set -e
 
-# check if dockerhub username is set as envionment variable
-if [ -z "$DOCKER_USERNAME" ]; then
-    echo "Please set the DOCKER_USERNAME environment variable."
-    exit 1
-fi
-
-# Log in to Docker Hub
-echo "Logging in to Docker Hub..."
-docker login -u "$DOCKER_USERNAME"
-
-# Check if login was successful
-if [ $? -ne 0 ]; then
-    echo "Docker Hub login failed!"
-    exit 1
-fi
-
 # Function to download and copy static resources
 download_resources() {
     local resource_type=$1
@@ -63,11 +47,18 @@ else
     fi
 fi
 
+# Setup Docker registry
+echo "Step 2: Setting up Docker registry..."
+docker volume create registry-data
+docker run -d -p 5000:5000 --restart always --name registry -v registry-data:/var/lib/registry registry:2
+
 # Build and deploy Docker image
-echo "Step 2: Building Docker image..."
+echo "Step 3: Building Docker image..."
 docker compose build --no-cache
 
-docker image push "$DOCKER_USERNAME"/autocomplete-image:latest
-docker image push "$DOCKER_USERNAME"/search-image:latest
-docker image push "$DOCKER_USERNAME"/web-server-image:latest
+# Push Docker images to the registry
+echo "Step 4: Pushing Docker images to the registry..."
+docker image push localhost:5000/autocomplete-image:latest
+docker image push localhost:5000/search-image:latest
+docker image push localhost:5000/web-server-image:latest
 

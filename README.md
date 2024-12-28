@@ -76,12 +76,29 @@ cd playlist2vec
     sudo systemctl restart nginx
     ```
 
-### 7. Install the Application
+### 7. Build the Application
 
 From within the project directory, execute the build script:
 ```
 ./build.sh.
 ```
+
+This script:
+- Downloads the resources needed for the application to run.
+- Creates a local registry.
+- Builds the docker images.
+- Pushes the docker images to the registry. 
+
+### 8. Run the Application
+
+Finally, execute the run script:
+```
+./run.sh
+```
+
+This script:
+- Copies the website's static resources to the nginx folder.
+- Deploys the docker swarm setup using the images built. 
 
 This will create an HTTP version of the website, which can be integrated with a service like a [Cloudflare tunnel](https://www.cloudflare.com/en-ca/products/tunnel/) for an HTTPS frontend.
 

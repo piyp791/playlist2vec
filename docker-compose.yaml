@@ -1,7 +1,7 @@
 services:
   autocomplete-service:
     build: ./autocomplete-service
-    image: piyp791/autocomplete-image:latest
+    image: localhost:5000/autocomplete-image:latest
     networks:
       - p2v-network
     env_file:
@@ -24,7 +24,7 @@ services:
 
   search-service:
     build: ./search-service
-    image: piyp791/search-image:latest
+    image: localhost:5000/search-image:latest
     networks:
       - p2v-network
     env_file:
@@ -47,7 +47,7 @@ services:
 
   web-server:
     build: ./web-server
-    image: piyp791/web-server-image:latest
+    image: localhost:5000/web-server-image:latest
     ports:
       - "3000:3000"
     networks:
