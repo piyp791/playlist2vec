@@ -1,26 +1,10 @@
 import unittest
+from scale_services import ScaleServices
 
-from scale import get_scale
-
-# Constants for scaling logic
-REQUEST_CAPACITY = {
-    '/search-random': 25,
-    '/search': 25,
-    '/populate': 70,
-}
-MAX_REPLICAS_PER_SERVICE = {
-    'playlist2vec_stack_search-service': 4,
-    'playlist2vec_stack_autocomplete-service': 3,
-}
-
-ENDPOINTS_SERVICES = {
-    '/search-random' : 'playlist2vec_stack_search-service',
-    '/search' : 'playlist2vec_stack_search-service',
-    '/populate' : 'playlist2vec_stack_autocomplete-service'
-}
-
-
-class TestGetScale(unittest.TestCase):
+class TestScaleServices(unittest.TestCase):
+    
+    def setUp(self):
+        self.scale_services = ScaleServices()
 
     def test_no_requests(self):
         request_counts = {
@@ -29,10 +13,10 @@ class TestGetScale(unittest.TestCase):
             '/populate': 0,
         }
         expected_replicas = {
-            'playlist2vec_stack_search-service': 1,
-            'playlist2vec_stack_autocomplete-service': 1,
+            self.scale_services.SEARCH_SERVICE: 1,
+            self.scale_services.AUTOCOMPLETE_SERVICE: 1,
         }
-        result = get_scale(request_counts)
+        result = self.scale_services.get_scale(request_counts)
         self.assertEqual(result, expected_replicas)
 
     
@@ -43,10 +27,10 @@ class TestGetScale(unittest.TestCase):
             '/populate': 600,
         }
         expected_replicas = {
-            'playlist2vec_stack_search-service': 3,
-            'playlist2vec_stack_autocomplete-service': 1,
+            self.scale_services.SEARCH_SERVICE: 3,
+            self.scale_services.AUTOCOMPLETE_SERVICE: 1,
         }
-        result = get_scale(request_counts)
+        result = self.scale_services.get_scale(request_counts)
         self.assertEqual(result, expected_replicas)
 
     
@@ -57,10 +41,10 @@ class TestGetScale(unittest.TestCase):
             '/populate': 30000,
         }
         expected_replicas = {
-            'playlist2vec_stack_search-service': 4,
-            'playlist2vec_stack_autocomplete-service': 3,
+            self.scale_services.SEARCH_SERVICE: 4,
+            self.scale_services.AUTOCOMPLETE_SERVICE: 3,
         }
-        result = get_scale(request_counts)
+        result = self.scale_services.get_scale(request_counts)
         self.assertEqual(result, expected_replicas)
 
     
@@ -71,10 +55,10 @@ class TestGetScale(unittest.TestCase):
             '/populate': 0,
         }
         expected_replicas = {
-            'playlist2vec_stack_search-service': 1,
-            'playlist2vec_stack_autocomplete-service': 1,
+            self.scale_services.SEARCH_SERVICE: 1,
+            self.scale_services.AUTOCOMPLETE_SERVICE: 1,
         }
-        result = get_scale(request_counts)
+        result = self.scale_services.get_scale(request_counts)
         self.assertEqual(result, expected_replicas)
         
 if __name__ == "__main__":

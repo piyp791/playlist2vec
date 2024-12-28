@@ -14,7 +14,7 @@ read_logs() {
     end=$(date '+[%d/%b/%Y:%H:%M:%S]')
 
     # Use awk to process the log file
-    awk -v start="$start" -v end="$end" -v search_random_count="$search_random_count" -v search_count="$search_count" -v populate_count="$populate_count" '
+    awk -v start="$start" -v end="$end"ls '
         BEGIN {
             # Initialize counts
             search_random_count = 0
@@ -34,7 +34,7 @@ read_logs() {
             print "/search-random=" search_random_count;
             print "/search=" search_count;
             print "/populate=" populate_count;
-        }' /var/log/nginx/access.log
+        }' "$LOG_FILE"
 }
 
 read_logs
