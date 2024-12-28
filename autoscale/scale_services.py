@@ -1,12 +1,16 @@
 import subprocess
 import os
 from datetime import datetime
+from log_setup import setup_logging
+
+current_dir = '/home/peps/research/playlist2vec/autoscale'
+logger = setup_logging(f'{current_dir}/logs')
 
 class ScaleServices:
     def __init__(self):
         # Constants for the autoscaling logic
         self.TIMEFRAME = 60  # time in seconds after which the script will be run
-        self.LOG_FILE_PARSER = '/home/ubuntu/playlist2vec/autoscale/get_requests.sh'
+        self.LOG_FILE_PARSER = f'{current_dir}/get_requests.sh'
 
         self.SEARCH_SERVICE = 'playlist2vec_stack_search-service'
         self.AUTOCOMPLETE_SERVICE = 'playlist2vec_stack_autocomplete-service' 
@@ -28,9 +32,14 @@ class ScaleServices:
         }
         
     def __read_log_parser_output(self):
-        print(f"Reading request counts from the Bash script at: {datetime.now()}")
+        logger.info(f"Reading request counts from the Bash script at: {datetime.now()}")
         result = subprocess.run(['bash', self.LOG_FILE_PARSER], capture_output=True, text=True)
-        print("Done...")
+        logger.info("Done...")
+        # capture error if any
+        if result.returncode != 0:
+            logger.error(f"Error: {result.stderr}")
+            return None
+        
         output = result.stdout.strip().splitlines()
 
         # Parse the output into a dictionary
@@ -48,7 +57,7 @@ class ScaleServices:
         if result.isdigit():
             return int(result)  # Convert the result to an integer
         else:
-            print("Error: Unable to retrieve replicas.")
+            logger.error("Error: Unable to retrieve replicas.")
             return None
 
     def get_scale(self, request_counts):
@@ -57,11 +66,11 @@ class ScaleServices:
 
         for endpoint, count in request_counts.items():
             avg_count = count // self.TIMEFRAME
-            print(f"Endpoint: {endpoint}, Count: {count}, Avg Count: {avg_count}")
+            logger.info(f"Endpoint: {endpoint}, Count: {count}, Avg Count: {avg_count}")
             service_name = self.ENDPOINTS_SERVICES.get(endpoint, None)
             service_requests_count[service_name] = service_requests_count.get(service_name, 0) + avg_count
 
-        print(f"Cumulative Service Requests Count: {service_requests_count}")
+        logger.info(f"Cumulative Service Requests Count: {service_requests_count}")
 
         for service, avg_count in service_requests_count.items():
             capacity = self.SERVICE_INSTANCE_CAPACITY.get(service, 1)
@@ -73,15 +82,24 @@ class ScaleServices:
     def do_scale(self):
         # Read request counts from the Bash script
         request_counts = self.__read_log_parser_output()
+        if request_counts is None:
+            logger.error("Error reading request counts. Exiting.")
+            return
+
         required_service_replicas = self.get_scale(request_counts)
-        print(f"Required Service Replicas: {required_service_replicas}")
+        logger.info(f"Required Service Replicas: {required_service_replicas}")
         # Execute scaling commands
         for service, replicas in required_service_replicas.items():
             current_replicas = self.__get_current_replicas(service)
             if current_replicas == replicas:
-                print(f"{service} is already at {replicas} replicas")
+                logger.info(f"{service} is already at {replicas} replicas")
                 continue
             
-            print(f"Scaling {service} to {replicas} replicas")
+            logger.info(f"Scaling {service} to {replicas} replicas")
             os.system(f"docker service scale {service}={replicas}")
+            
+
+if __name__ == "__main__":
+    scale_services = ScaleServices()
+    scale_services.do_scale()
 
