@@ -1,6 +1,25 @@
 #!/bin/bash
 set -e
 
+export REGISTRY_HOST=$(hostname -I | awk '{print $1}')
+echo "Registry host: ${REGISTRY_HOST}"
+
+if [ -z "$REGISTRY_HOST" ]; then
+    echo "Failed to get the registry host. Exiting..."
+    exit 1
+fi
+
+# Update or add the REGISTRY_HOST variable in the .env file
+if grep -q '^REGISTRY_HOST=' .env; then
+    sed -i "s|^REGISTRY_HOST=.*|REGISTRY_HOST=${REGISTRY_HOST}|" .env
+else
+    echo "REGISTRY_HOST=${REGISTRY_HOST}" >> .env
+fi
+
+# Read the REGISTRY_PORT value
+REGISTRY_PORT=$(grep '^REGISTRY_PORT=' .env | cut -d '=' -f2)
+echo "Registry Port: ${REGISTRY_PORT}"
+
 # Function to download and copy static resources
 download_resources() {
     local resource_type=$1
@@ -50,7 +69,7 @@ fi
 # Setup Docker registry
 echo "Step 2: Setting up Docker registry..."
 docker volume create registry-data
-docker run -d -p 5000:5000 --restart always --name registry -v registry-data:/var/lib/registry registry:2
+docker run -d -p ${REGISTRY_PORT}:${REGISTRY_PORT} --restart always --name registry -v registry-data:/var/lib/registry registry:2
 
 # Build and deploy Docker image
 echo "Step 3: Building Docker image..."
@@ -58,7 +77,7 @@ docker compose build --no-cache
 
 # Push Docker images to the registry
 echo "Step 4: Pushing Docker images to the registry..."
-docker image push localhost:5000/autocomplete-image:latest
-docker image push localhost:5000/search-image:latest
-docker image push localhost:5000/web-server-image:latest
+docker image push "${REGISTRY_HOST}:${REGISTRY_PORT}/autocomplete-image:latest"
+docker image push "${REGISTRY_HOST}:${REGISTRY_PORT}/search-image:latest"
+docker image push "${REGISTRY_HOST}:${REGISTRY_PORT}/web-server-image:latest"
 

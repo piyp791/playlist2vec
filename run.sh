@@ -16,4 +16,6 @@ sudo cp -r dist/* /usr/share/nginx/html/
 cd ../
 
 echo "Step 3: Deploying docker stack..."
-docker stack config -c docker-compose.yaml | docker stack deploy -c - playlist2vec_stack
+
+# https://stackoverflow.com/a/76651942/1534821
+export $(grep -v '^#' .env | xargs) && docker stack config -c docker-compose.yaml | docker stack deploy -c - playlist2vec_stack

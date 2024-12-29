@@ -1,7 +1,7 @@
 services:
   autocomplete-service:
     build: ./autocomplete-service
-    image: localhost:5000/autocomplete-image:latest
+    image: ${REGISTRY_HOST}:${REGISTRY_PORT}/autocomplete-image:latest
     networks:
       - p2v-network
     env_file:
@@ -24,7 +24,7 @@ services:
 
   search-service:
     build: ./search-service
-    image: localhost:5000/search-image:latest
+    image: ${REGISTRY_HOST}:${REGISTRY_PORT}/search-image:latest
     networks:
       - p2v-network
     env_file:
@@ -47,11 +47,13 @@ services:
 
   web-server:
     build: ./web-server
-    image: localhost:5000/web-server-image:latest
+    image: ${REGISTRY_HOST}:${REGISTRY_PORT}/web-server-image:latest
     ports:
       - "3000:3000"
     networks:
       - p2v-network
+    env_file:
+      - .env
     deploy:
       replicas: 1
     healthcheck:
