@@ -3,7 +3,7 @@
 # Configuration
 LOG_FILE="/var/log/nginx/access.log"  # Path to the Nginx access log file
 LOG_FILE_PR="/var/log/nginx/access.log.1"
-TIMEFRAME=60 # Timeframe in seconds
+TIMEFRAME=15 # Timeframe in seconds
 
 read_logs() {
     local start end
@@ -11,7 +11,7 @@ read_logs() {
     local search_count=0
     local populate_count=0
 
-    start=$(date -d '1 minute ago' '+[%d/%b/%Y:%H:%M:%S]')
+    start=$(date -d "${TIMEFRAME} seconds ago" '+[%d/%b/%Y:%H:%M:%S]')
     end=$(date '+[%d/%b/%Y:%H:%M:%S]')
 
     # Use awk to process the log file

@@ -1,0 +1,11 @@
+{
+    "timeframe": 15,
+    "instance_capacity": {
+        "search": 25,
+        "autocomplete": 70
+    },
+    "max_replicas": {
+        "search": 4,
+        "autocomplete": 3
+    }
+}

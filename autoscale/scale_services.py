@@ -1,28 +1,28 @@
+import json
 import subprocess
 import os
 from datetime import datetime
 from log_setup import setup_logging
 
-current_dir = '/home/ubuntu/playlist2vec/autoscale'
+current_dir = '/home/peps/research/playlist2vec/autoscale'
 logger = setup_logging(f'{current_dir}/logs')
 
 class ScaleServices:
-    def __init__(self):
-        # Constants for the autoscaling logic
-        self.TIMEFRAME = 60  # time in seconds after which the script will be run
+    def __init__(self, config):
+        self.TIMEFRAME = config['timeframe']  # time in seconds after which the script will be run
         self.LOG_FILE_PARSER = f'{current_dir}/get_requests.sh'
 
         self.SEARCH_SERVICE = 'playlist2vec_stack_search-service'
         self.AUTOCOMPLETE_SERVICE = 'playlist2vec_stack_autocomplete-service' 
 
         self.SERVICE_INSTANCE_CAPACITY = {
-            self.SEARCH_SERVICE: 25,
-            self.AUTOCOMPLETE_SERVICE: 70,
+            self.SEARCH_SERVICE: config['instance_capacity']['search'],
+            self.AUTOCOMPLETE_SERVICE: config['instance_capacity']['autocomplete'],
         }
 
         self.MAX_REPLICAS_PER_SERVICE = {
-            self.SEARCH_SERVICE: 4,
-            self.AUTOCOMPLETE_SERVICE: 3,
+            self.SEARCH_SERVICE: config['max_replicas']['search'],
+            self.AUTOCOMPLETE_SERVICE: config['max_replicas']['autocomplete'],
         }
 
         self.ENDPOINTS_SERVICES = {
@@ -139,6 +139,7 @@ class ScaleServices:
             
 
 if __name__ == "__main__":
-    scale_services = ScaleServices()
+    config = json.load(open(f'{current_dir}/config.json', 'r'))
+    scale_services = ScaleServices(config)
     scale_services.do_scale()
 

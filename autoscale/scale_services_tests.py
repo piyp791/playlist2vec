@@ -1,10 +1,15 @@
+import json
 import unittest
 from scale_services import ScaleServices
 
 class TestScaleServices(unittest.TestCase):
     
     def setUp(self):
-        self.scale_services = ScaleServices()
+        current_dir = '/home/peps/research/playlist2vec/autoscale'
+        
+        with open(f'{current_dir}/config.json', 'r') as f:
+            self.config = json.load(f)
+            self.scale_services = ScaleServices(self.config)
 
     def test_no_requests(self):
         request_counts = {
@@ -22,9 +27,9 @@ class TestScaleServices(unittest.TestCase):
     
     def test_requests_within_capacity(self):
         request_counts = {
-            '/search-random': 900,
-            '/search': 2400,
-            '/populate': 600,
+            '/search-random': 15 * self.config['timeframe'],
+            '/search': 40 * self.config['timeframe'],
+            '/populate': 10 * self.config['timeframe'],
         }
         expected_replicas = {
             self.scale_services.SEARCH_SERVICE: 3,
@@ -36,9 +41,9 @@ class TestScaleServices(unittest.TestCase):
     
     def test_exceeding_max_replicas(self):
         request_counts = {
-            '/search-random': 6000,
-            '/search': 6000,
-            '/populate': 30000,
+            '/search-random': 100 * self.config['timeframe'],
+            '/search': 100 * self.config['timeframe'],
+            '/populate': 500 * self.config['timeframe'],
         }
         expected_replicas = {
             self.scale_services.SEARCH_SERVICE: 4,
@@ -50,8 +55,8 @@ class TestScaleServices(unittest.TestCase):
     
     def test_partial_requests(self):
         request_counts = {
-            '/search-random': 30,
-            '/search': 600,
+            '/search-random': 15 * self.config['timeframe'],
+            '/search': 10 * self.config['timeframe'],
             '/populate': 0,
         }
         expected_replicas = {
