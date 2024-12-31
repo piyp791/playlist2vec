@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 from log_setup import setup_logging
 
-current_dir = '/home/peps/research/playlist2vec/autoscale'
+current_dir = '/home/ubuntu/playlist2vec/autoscale'
 logger = setup_logging(f'{current_dir}/logs')
 
 class ScaleServices:
