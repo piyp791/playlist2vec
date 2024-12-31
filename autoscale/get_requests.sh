@@ -2,6 +2,7 @@
 
 # Configuration
 LOG_FILE="/var/log/nginx/access.log"  # Path to the Nginx access log file
+LOG_FILE_PR="/var/log/nginx/access.log.1"
 TIMEFRAME=60 # Timeframe in seconds
 
 read_logs() {
@@ -34,7 +35,7 @@ read_logs() {
             print "/search-random=" search_random_count;
             print "/search=" search_count;
             print "/populate=" populate_count;
-        }' "$LOG_FILE"
+        }' "$LOG_FILE" "$LOG_FILE_PR"
 }
 
 read_logs

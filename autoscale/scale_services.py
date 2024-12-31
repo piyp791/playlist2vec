@@ -51,13 +51,19 @@ class ScaleServices:
 
     def __get_current_replicas(self, service_name):
         # Run the Docker command to get service details
-        command = f"docker service inspect {service_name} --format '{{{{.Spec.Mode.Replicated.Replicas}}}}'"
-        result = os.popen(command).read().strip()  # Use os.popen to capture the output
-
-        if result.isdigit():
-            return int(result)  # Convert the result to an integer
-        else:
-            logger.error("Error: Unable to retrieve replicas.")
+        command = ['docker', 'service', 'inspect', service_name, '--format', '{{.Spec.Mode.Replicated.Replicas}}']
+        
+        try:
+            result = subprocess.run(command, capture_output=True, text=True, check=True)
+            replicas = result.stdout.strip()
+            
+            if replicas.isdigit():
+                return int(replicas)  # Convert the result to an integer
+            else:
+                logger.error(f"Error: Unexpected output for replicas: '{replicas}'")
+                return None
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to retrieve replicas for service '{service_name}': {e}")
             return None
 
     def get_scale(self, request_counts):
@@ -79,7 +85,45 @@ class ScaleServices:
             required_service_replicas[service] = max(min(desired_replicas, self.MAX_REPLICAS_PER_SERVICE[service]), 1)
         return required_service_replicas
     
+    def __is_swarm_active(self):
+        try:
+            result = subprocess.run(
+                ['docker', 'info', '--format', '{{.Swarm.LocalNodeState}}'],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            return result.stdout.strip() == 'active'
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to check Docker Swarm state: {e}")
+            return False
+        
+    def __scale_service(self, service, target_replicas):
+        current_replicas = self.__get_current_replicas(service)
+        if current_replicas is None:
+            logger.error(f"Error reading current replicas for {service}. Skipping...")
+            return
+
+        if current_replicas == target_replicas:
+            logger.info(f"{service} is already at {target_replicas} replicas")
+            return
+
+        logger.info(f"Scaling {service} from {current_replicas} to {target_replicas} replicas")
+        try:
+            subprocess.run(
+                ['docker', 'service', 'scale', f'{service}={target_replicas}'],
+                check=True
+            )
+            logger.info(f"Successfully scaled {service} to {target_replicas} replicas")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to scale {service} to {target_replicas} replicas: {e}")
+    
     def do_scale(self):
+        # Check if Docker Swarm is initialized
+        if not self.__is_swarm_active():
+            logger.error("Docker Swarm is not active. Exiting.")
+            return
+
         # Read request counts from the Bash script
         request_counts = self.__read_log_parser_output()
         if request_counts is None:
@@ -88,15 +132,10 @@ class ScaleServices:
 
         required_service_replicas = self.get_scale(request_counts)
         logger.info(f"Required Service Replicas: {required_service_replicas}")
+
         # Execute scaling commands
         for service, replicas in required_service_replicas.items():
-            current_replicas = self.__get_current_replicas(service)
-            if current_replicas == replicas:
-                logger.info(f"{service} is already at {replicas} replicas")
-                continue
-            
-            logger.info(f"Scaling {service} to {replicas} replicas")
-            os.system(f"docker service scale {service}={replicas}")
+            self.__scale_service(service, replicas)
             
 
 if __name__ == "__main__":
