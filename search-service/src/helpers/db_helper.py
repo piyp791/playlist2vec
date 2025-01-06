@@ -32,6 +32,15 @@ class DBHelper:
     def __get_connection(self):
         if self.connection is not None: return self.connection
         return self.__init_connection(self.is_mini)
+    
+    def check_health(self):
+        connection = self.__get_connection()
+        cursor = connection.cursor()
+        
+        cursor.execute("SELECT 1")
+        result = cursor.fetchone()
+        
+        return result and result[0] == 1
 
     def get_item_details(self, idxs: List[int] = ()) -> Dict[int, ItemInfo]:
         conn = self.__get_connection()

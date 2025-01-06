@@ -27,10 +27,11 @@ module.exports = {
     .catch((err) => {
       // possible error codes: 400, 500
       if (err.response && (err.response.status === 500 || err.response.status === 400)) {
-        throw new APIError(`API call failed with error ${JSON.stringify(err.response.data)}`);
+        throw new APIError(`API call failed with error code: ${err.response.code} :: ${JSON.stringify(err.response.data)}`);
       }
       else {
-        throw new ConnectionError(`Error in sending request to URL : ${resourceLocator} with payload ${JSON.stringify(recEnginePayload)}`);
+        const statusCode = err?.response?.status ?? 0;
+        throw new ConnectionError(`Error in sending request to URL : ${resourceLocator} :: Error code: ${statusCode} :: Payload ${JSON.stringify(recEnginePayload)}`);
       }
     });
   },

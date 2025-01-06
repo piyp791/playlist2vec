@@ -8,3 +8,4 @@ web-server/dist/*
 __pycache__
 *.db
 *.log
+*logs.log.*

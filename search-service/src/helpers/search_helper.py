@@ -66,5 +66,11 @@ class SearchHelper:
         nearest_idxs = self.search_tree.search(query_vector, 
                                                         (self.config['search']['num_results']))
         return [ int(item.key) for item in nearest_idxs]
+    
+    def check_health(self):
+        index_size = self.search_tree.size
+        if index_size is None or index_size == 0:
+            raise Exception(f"Search index health check failed. Index size: {index_size}")
+        return True
 
 

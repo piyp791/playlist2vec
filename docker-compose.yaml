@@ -1,28 +1,68 @@
 services:
   autocomplete-service:
     build: ./autocomplete-service
-    image: autocomplete-image:latest
+    image: ${REGISTRY_HOST}:${REGISTRY_PORT}/autocomplete-image:latest
     networks:
       - p2v-network
-    environment:
-      - IS_MINI
+    env_file:
+      - .env
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.75'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "requestid:healthcheckrequest", "-H", "endpoint:health", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
 
   search-service:
     build: ./search-service
-    image: search-image:latest
+    image: ${REGISTRY_HOST}:${REGISTRY_PORT}/search-image:latest
     networks:
       - p2v-network
-    environment:
-      - IS_MINI
+    env_file:
+      - .env
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.75'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "requestid:healthcheckrequest", "-H", "endpoint:health", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
 
   web-server:
     build: ./web-server
-    image: web-server-image:latest
+    image: ${REGISTRY_HOST}:${REGISTRY_PORT}/web-server-image:latest
     ports:
       - "3000:3000"
     networks:
       - p2v-network
+    env_file:
+      - .env
+    deploy:
+      replicas: 1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
 
 networks:
   p2v-network:
-    driver: bridge
+    driver: overlay

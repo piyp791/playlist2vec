@@ -12,6 +12,7 @@ This repository contains code for [playlist2vec.com](https://playlist2vec.com/),
 - [x] NGINX configuration for a robust traffic handling.
 - [x] Rate limiting implemented to safeguard against DDoS attacks.
 - [x] NGINX caching to optimize server resource usage.
+- [x] Docker swarm setup with a bash-based DIY autoscaling setup
 - [ ] Auto-scaling capabilities using Kubernetes.
 
 ## INSTALLATION
@@ -76,12 +77,44 @@ cd playlist2vec
     sudo systemctl restart nginx
     ```
 
-### 7. Install the Application
+### 7. Update Docker Daemon Configuration For Local Registry
+
+Ensure that you add the following configuration to the `/etc/docker/daemon.json` file (on all machines in a multi-machine cluster setup) to accommodate the local registry needed for Docker images:
+```
+{                                                                                       
+  "insecure-registries": ["<Registry-Host-IP>:5000"]                                                
+}                                                                                       
+```
+
+You can get the registry host IP by running the following command:
+
+```
+$(hostname -I | awk '{print $1}'
+```
+
+### 8. Build the Application
 
 From within the project directory, execute the build script:
 ```
 ./build.sh.
 ```
+
+This script:
+- Downloads the resources needed for the application to run.
+- Creates a local registry.
+- Builds the docker images.
+- Pushes the docker images to the registry. 
+
+### 9. Run the Application
+
+Finally, execute the run script:
+```
+./run.sh
+```
+
+This script:
+- Copies the website's static resources to the nginx folder.
+- Deploys the docker swarm setup using the images built. 
 
 This will create an HTTP version of the website, which can be integrated with a service like a [Cloudflare tunnel](https://www.cloudflare.com/en-ca/products/tunnel/) for an HTTPS frontend.
 

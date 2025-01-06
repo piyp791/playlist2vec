@@ -52,4 +52,8 @@ module.exports = (app) => {
             next(err);
         }
     });
+
+    app.get('/health', (req, res, next) => {
+        res.status(200).json({status: 'healthy'});
+    });
 }
